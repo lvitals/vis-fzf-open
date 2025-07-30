@@ -75,5 +75,4 @@ Requirements
 License
 -------
 
-This plugin is licensed under the GNU Affero General Public License v3:
-https://www.gnu.org/licenses/agpl-3.0.html
+This plugin is licensed under the MIT
