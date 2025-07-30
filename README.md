@@ -1,76 +1,79 @@
-# vis-fzf-open
+vis-fzf-open
+============
 
 A plugin for the vis editor that integrates `fzf` for fast fuzzy file search and opening.
 
-## Features
+Features
+--------
 
-*   Use `fzf` to fuzzy-search and open files directly from vis.
-*   Simple and minimal implementation.
-*   Compatible with Lua 5.3+ and modern vis plugin loading system.
-*   `:fzfexplorer` command with enhanced visuals and layout customization.
-    
+* Use `fzf` to fuzzy-search and open files directly from vis.
+* Simple and minimal implementation.
+* Compatible with Lua 5.3+ and the modern vis plugin loading system.
+* Supports custom commands and visual configuration (e.g., explorer mode).
 
-## Installation
+Installation
+------------
 
-1.  Place the plugin in your vis configuration directory:
-    
-    ~/.config/vis/plugins/vis-fzf-open.lua
-    
-2.  In your `~/.config/vis/init.lua`, load the plugin:
-    
-    require('plugins.vis-fzf-open')
-    
-      
-    
-    \-- Optionally, map it to a key (e.g., Alt+P):
-    
-    vis:map(vis.modes.NORMAL, "<M-p>", ":fzf\\n")
-    
+1. Place the plugin in your vis configuration directory:
 
-## Configuration
+   ~/.config/vis/plugins/vis-fzf-open/init.lua
 
-You can customize the `fzf` path and arguments, including enhanced styling for the explorer mode:
+2. In your ~/.config/vis/visrc.lua, load the plugin:
 
+```lua
+   local fzf = require('plugins/vis-fzf-open')
+
+   Optionally, map it to keys (e.g., Alt+P):
+
+   vis.events.subscribe(vis.events.INIT, function()
+       vis:command('map normal <M-p> :fzf<Enter>')
+       vis:command('map normal <M-b> :fzfexplorer<Enter>')
+   end)
 ```
+
+Configuration
+-------------
+
+You can configure arguments for different `fzf` commands using properties:
+
+```lua
 local fzf = require('plugins/vis-fzf-open')
 
-fzf.fzf_args = "--preview 'bat --style=numbers --color=always {}' --height=40%"
+-- Set default arguments for the :fzf command
+fzf.args = "--preview 'bat --style=numbers --color=always {}' --height=40%"
 
-fzf.fzf_explorer_args = "--preview 'bat --style=numbers --color=always {}' --style=full --border --padding=1,2 --border-label=' File Explorer ' --input-label=' Search ' --header-label=' File Type ' --color='border:#aaaaaa,label:#cccccc' --color='preview-border:#9999cc,preview-label:#ccccff' --color='list-border:#669966,list-label:#99cc99' --color='input-border:#996666,input-label:#ffcccc' --color='header-border:#6699cc,header-label:#99ccff' --layout=reverse --height=100%"
+-- Set custom arguments for explorer command
+fzf:command('fzfexplorer').args = "--preview 'bat --style=numbers --color=always {}' --style=full --border --padding=1,2 --border-label=' File Explorer ' --input-label=' Search ' --header-label=' File Type ' --color='border:#aaaaaa,label:#cccccc' --color='preview-border:#9999cc,preview-label:#ccccff' --color='list-border:#669966,list-label:#99cc99' --color='input-border:#996666,input-label:#ffcccc' --color='header-border:#6699cc,header-label:#99ccff' --layout=reverse --height=100%"
 
-vis.events.subscribe(vis.events.INIT, function()
-
-	--keyboard shortcuts--
-	vis:command('map normal <M-p> :fzf<Enter>')
-	vis:command('map normal <M-b> :fzfexplorer<Enter>')
-
-end)
+-- Define additional commands if needed
+fzf:command('fzfcustom').args = "--preview 'cat {}' --height=30%"
 ```
 
-## Usage
+Usage
+-----
 
-### Quick Search
+Quick Search
 
-In normal mode, run:
+Use the command :fzf or the mapped key (e.g., <M-p>). This opens a fuzzy finder to locate files quickly.
 
-:fzf
+Explorer Mode
 
-Or use the mapped key (e.g., Alt+P). The selected file will be opened immediately.
+Use :fzfexplorer to open the enhanced file explorer interface with border, labels, and previews powered by `bat`.
 
-### Explorer Mode
+Custom Commands
 
-Run:
+You can define any number of custom `fzf` commands with unique styles and behaviors using:
 
-:fzfexplorer
+fzf:command('mycommand').args = "--your-fzf-options-here"
 
-This version provides a styled UI with labels, borders, previews using `bat`, and a full-height reverse layout.
+Requirements
+------------
 
-## Requirements
+* fzf must be installed and available in your system PATH.
+* bat is optional but recommended for file preview.
 
-*   [fzf](https://github.com/junegunn/fzf) must be installed and available in your system PATH.
-*   [bat](https://github.com/sharkdp/bat) is optional but recommended for file previews.
-    
+License
+-------
 
-## License
-
-This plugin is licensed under the [GNU Affero General Public License v3](https://www.gnu.org/licenses/agpl-3.0.html).
+This plugin is licensed under the GNU Affero General Public License v3:
+https://www.gnu.org/licenses/agpl-3.0.html
